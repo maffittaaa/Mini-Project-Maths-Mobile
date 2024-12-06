@@ -45,17 +45,15 @@ open class Player(
 
         position.x += velocity.x; // adding velocity to the player's position (x-directions)
         position.y += velocity.y; //adding velocity to the player's position (y-directions)
-        if (isJumping)
-            println(velocity.y)
         isJumping = false;
     }
 
     fun jump() {
-        isJumping = true;
-        println(isOnTheFloor())
+
         if (isOnTheFloor())//if player is on the ground
         {
             velocity.y = -jumpForce / mass * Physics.deltaTime; // subtract the jumpforce to the velocity on the y-directions to go up (if it was +jumpForce, go down instead of up)
+            isJumping = true;
         }
     }
 
@@ -99,16 +97,16 @@ open class Player(
         return false; // if player is in the air
     }
 
-    @SuppressLint("DrawAllocation")
-    override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas)
-        var painter = Paint(Paint.ANTI_ALIAS_FLAG)
-        painter.color = Color.rgb (255f, 0f, 0f);
-        painter.style = Paint.Style.FILL
-
-        Physics.platforms.forEach { rectangle -> //for each rectangle that is created
-            var closestPoint = GetClosestPointOnRectangle(rectangle);
-            canvas!!.drawRect(closestPoint.x - 10, closestPoint.y - 10, closestPoint.x + 10,closestPoint.y + 10, painter)
-        }
-    }
+//    @SuppressLint("DrawAllocation")
+//    override fun onDraw(canvas: Canvas?) {
+//        super.onDraw(canvas)
+//        var painter = Paint(Paint.ANTI_ALIAS_FLAG)
+//        painter.color = Color.rgb (255f, 0f, 0f);
+//        painter.style = Paint.Style.FILL
+//
+//        Physics.platforms.forEach { rectangle -> //for each rectangle that is created
+//            var closestPoint = GetClosestPointOnRectangle(rectangle);
+//            canvas!!.drawRect(closestPoint.x - 10, closestPoint.y - 10, closestPoint.x + 10,closestPoint.y + 10, painter)
+//        }
+//    }
 }
