@@ -10,7 +10,7 @@
         android:id="@+id/gameSurface"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#144557"
+        android:background="#3A505A"
         android:outlineAmbientShadowColor="@color/black"
         android:outlineSpotShadowColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/controls_layout"
@@ -23,7 +23,7 @@
         android:id="@+id/controls_layout"
         android:layout_width="0dp"
         android:layout_height="203dp"
-        android:background="#144557"
+        android:background="#141E4B"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.65"
@@ -52,10 +52,11 @@
             android:id="@+id/left_button"
             android:layout_width="70dp"
             android:layout_height="70dp"
+            android:layout_marginStart="4dp"
             android:layout_marginBottom="4dp"
             android:text="L"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:layout_editor_absoluteX="6dp" />
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

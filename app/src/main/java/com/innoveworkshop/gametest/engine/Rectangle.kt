@@ -17,7 +17,6 @@ open class Rectangle(position: Vector?, var width: Float, var height: Float, col
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        println("Drawing player at position: (${position.x}, ${position.y})")
 
         // Calculate the positions of the points that form the rectangle.
         val left = position.x - (width / 2)
@@ -27,6 +26,8 @@ open class Rectangle(position: Vector?, var width: Float, var height: Float, col
 
         canvas!!.drawRect(left, top, right, bottom, paint)
     }
+
+
 
     override fun hitLeftWall(): Boolean {
         return (position.x - width / 2) <= gameSurface!!.width
