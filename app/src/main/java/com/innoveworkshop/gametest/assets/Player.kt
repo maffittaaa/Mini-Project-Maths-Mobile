@@ -1,5 +1,10 @@
 package com.innoveworkshop.gametest.assets
 
+import android.annotation.SuppressLint
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import androidx.core.graphics.toColor
 import com.innoveworkshop.gametest.engine.Physics
 import com.innoveworkshop.gametest.engine.Rectangle
 import com.innoveworkshop.gametest.engine.Vector
@@ -33,23 +38,24 @@ open class Player(
         acceleration = 0f; //after that, resets again
         inputForce = 0f; //after that, resets again
 
-        if (isFloored && !isJumping) //if the player is on the ground and not jumping
-            velocity.y = 0f; //his velocity on y-directions is 0
-        else if (!isFloored) //if he is jumping
+        if (!isJumping) {
             velocity.y += Physics.gravity * Physics.deltaTime; // add gravity to the jump
-
-        Physics.platforms.forEach{rectangle -> GetCollisionWithRectangle(rectangle)};
+            Physics.platforms.forEach { rectangle -> GetCollisionWithRectangle(rectangle) };
+        }
 
         position.x += velocity.x; // adding velocity to the player's position (x-directions)
         position.y += velocity.y; //adding velocity to the player's position (y-directions)
+        if (isJumping)
+            println(velocity.y)
         isJumping = false;
     }
 
     fun jump() {
-        if (isOnTheFloor()) //if player is on the ground
+        isJumping = true;
+        println(isOnTheFloor())
+        if (isOnTheFloor())//if player is on the ground
         {
-            velocity.y -= jumpForce / mass * Physics.deltaTime; // subtract the jumpforce to the velocity on the y-directions to go up (if it was +jumpForce, go down instead of up)
-            isJumping = true;
+            velocity.y = -jumpForce / mass * Physics.deltaTime; // subtract the jumpforce to the velocity on the y-directions to go up (if it was +jumpForce, go down instead of up)
         }
     }
 
@@ -62,7 +68,7 @@ open class Player(
     }
 
     fun GetCollisionWithRectangle(rectangle: Rectangle): Boolean {
-        var closestPoint = GetClosestPointOnRectangle(rectangle);
+        val closestPoint = GetClosestPointOnRectangle(rectangle);
         var distance = sqrt((position.x - closestPoint.x).pow(2) + (position.y - closestPoint.y).pow(2)); //distance between the position of the player and the closest point on the platforms
 
         if (distance < width / 2) { //if the player collides with the platform, basically it stops velocity
@@ -83,11 +89,26 @@ open class Player(
 
     fun isOnTheFloor(): Boolean { // isFloored 2.0
         Physics.platforms.forEach{rectangle -> //for each rectangle that is created
-            var closestPoint = GetClosestPointOnRectangle(rectangle);
-            if (closestPoint.y <= position.y + height / 2 + 2 && abs(position.x - closestPoint.x) <= 1) { // if the player is on the ground
+            val closestPoint = GetClosestPointOnRectangle(rectangle);
+            if (closestPoint.y <= position.y + height / 2 + 1 && abs(position.x - closestPoint.x) <= 1) { // if the player is on the ground
+                if (!isJumping)
+                    velocity.y = 0f;
                 return true;
             }
         };
         return false; // if player is in the air
+    }
+
+    @SuppressLint("DrawAllocation")
+    override fun onDraw(canvas: Canvas?) {
+        super.onDraw(canvas)
+        var painter = Paint(Paint.ANTI_ALIAS_FLAG)
+        painter.color = Color.rgb (255f, 0f, 0f);
+        painter.style = Paint.Style.FILL
+
+        Physics.platforms.forEach { rectangle -> //for each rectangle that is created
+            var closestPoint = GetClosestPointOnRectangle(rectangle);
+            canvas!!.drawRect(closestPoint.x - 10, closestPoint.y - 10, closestPoint.x + 10,closestPoint.y + 10, painter)
+        }
     }
 }
