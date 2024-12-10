@@ -4,13 +4,12 @@ import android.annotation.SuppressLint
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import androidx.core.graphics.toColor
 import com.innoveworkshop.gametest.engine.Physics
-import com.innoveworkshop.gametest.engine.Rectangle
 import com.innoveworkshop.gametest.engine.Vector
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
+import com.innoveworkshop.gametest.engine.Rectangle
 
 open class Player(
     position: Vector?,
@@ -21,12 +20,13 @@ open class Player(
 ) : Rectangle(position, width, height, color) {
 
     var velocity: Vector = Vector(0f, 0f);
-    var mass: Float = 1f;
-    var jumpForce: Float = 370f;
+    var mass: Float = 10f;
     var friction: Float = 0.7f;
     var speed = 150f;
     var acceleration: Float = 0f;
+    var jumpForce: Float = 370f;
     var inputForce: Float = 0f;
+    var pushForce: Float = 40f;
     var isJumping = false;
 
     override fun onFixedUpdate() {
@@ -46,6 +46,8 @@ open class Player(
         position.x += velocity.x; // adding velocity to the player's position (x-directions)
         position.y += velocity.y; //adding velocity to the player's position (y-directions)
         isJumping = false;
+
+        Physics.boxes.forEach { rectangle -> PushBoxes(rectangle) };
     }
 
     fun jump() {
@@ -78,7 +80,7 @@ open class Player(
             var overlap = width / 2 - distance
 
             velocity = Vector(velocity.x - result.x, velocity.y - result.y);
-            position = Vector(position.x + normal.x * overlap, position.y + normal.y * overlap)
+            position = Vector(position.x + normal.x * overlap, position.y + normal.y * overlap);
 
             return true;
         }
@@ -97,16 +99,36 @@ open class Player(
         return false; // if player is in the air
     }
 
-//    @SuppressLint("DrawAllocation")
-//    override fun onDraw(canvas: Canvas?) {
-//        super.onDraw(canvas)
-//        var painter = Paint(Paint.ANTI_ALIAS_FLAG)
-//        painter.color = Color.rgb (255f, 0f, 0f);
-//        painter.style = Paint.Style.FILL
-//
-//        Physics.platforms.forEach { rectangle -> //for each rectangle that is created
-//            var closestPoint = GetClosestPointOnRectangle(rectangle);
-//            canvas!!.drawRect(closestPoint.x - 10, closestPoint.y - 10, closestPoint.x + 10,closestPoint.y + 10, painter)
-//        }
-//    }
+    fun PushBoxes(rectangle: Rectangle) {
+
+        val closestPoint = GetClosestPointOnRectangle(rectangle);
+        var distance = sqrt((position.x - closestPoint.x).pow(2) + (position.y - closestPoint.y).pow(2))
+
+        if (distance < width / 2) {
+            println("hello");
+            pushForce = mass * velocity.x;
+            acceleration = pushForce / Box.mass;
+
+            Box.velocity?.x = Box.velocity?.x?.plus(acceleration * Physics.deltaTime)!!;
+            println(Box.velocity?.x)
+        }
+        Box.velocity?.x = Box.velocity?.x?.times(friction)!!; //add friction to box
+
+        position.x += velocity.x * Physics.deltaTime; //update position of player
+        Box.position.x += Box.velocity!!.x * Physics.deltaTime; //update position of box
+        println(Box.position.x)
+    }
+
+    @SuppressLint("DrawAllocation")
+    override fun onDraw(canvas: Canvas?) {
+        super.onDraw(canvas)
+        var painter = Paint(Paint.ANTI_ALIAS_FLAG)
+        painter.color = Color.rgb (255f, 0f, 0f);
+        painter.style = Paint.Style.FILL
+
+        Physics.platforms.forEach { rectangle -> //for each rectangle that is created
+            var closestPoint = GetClosestPointOnRectangle(rectangle);
+            canvas!!.drawRect(closestPoint.x - 10, closestPoint.y - 10, closestPoint.x + 10,closestPoint.y + 10, painter)
+        }
+    }
 }

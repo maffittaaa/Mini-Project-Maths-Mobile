@@ -72,6 +72,9 @@ class MainActivity : AppCompatActivity() {
         var player: Player? = null
         var ground: Rectangle? = null
         var platform1: Rectangle? = null
+        var platform2: Rectangle? = null
+        var box1: Rectangle? = null
+        var box2: Rectangle? = null
 
         override fun onStart(surface: GameSurface?) {
             super.onStart(surface)
@@ -79,7 +82,7 @@ class MainActivity : AppCompatActivity() {
             //creating player
             player = Player(
                 position = Vector((surface!!.width / 2).toFloat(), (surface.height / 2).toFloat()),
-                100f, 100f, Color.rgb(255f, 255f, 224f)
+                90f, 90f, Color.rgb(255f, 255f, 224f)
             )
             surface.addGameObject(player!!);
 
@@ -92,11 +95,38 @@ class MainActivity : AppCompatActivity() {
 
             //creating 1st platform
             platform1 = Rectangle(
-                position = Vector((surface.width - 200).toFloat(), (surface.height - 500).toFloat()),
+                position = Vector((surface.width - 200).toFloat(), (surface.height - 755).toFloat()),
                 800f, 50f, Color.rgb(0f, 0f, 0f)
             )
             surface.addGameObject(platform1!!);
             Physics.platforms.add(platform1!!);
+
+            //creating 2nd platform
+            platform2 = Rectangle(
+                position = Vector((surface.width - 1200).toFloat(), (surface.height - 1550).toFloat()),
+                800f, 50f, Color.rgb(0f, 0f, 0f)
+            )
+            surface.addGameObject(platform2!!);
+            Physics.platforms.add(platform2!!);
+
+            //creating 1st box
+            box1 = Rectangle(
+                position = Vector((surface.width / 2 + 100).toFloat(), (surface.height - 55).toFloat()),
+                120f,120f, Color.rgb(0, 128, 0)
+            )
+            surface.addGameObject(box1!!);
+            Physics.platforms.add(box1!!);
+            Physics.boxes.add(box1!!);
+
+            //creating 2nd box
+            box2 = Rectangle(
+                position = Vector((surface.width - 200).toFloat(), (surface.height - 840).toFloat()),
+                120f,120f, Color.rgb(0, 128, 0)
+            )
+            surface.addGameObject(box2!!);
+            Physics.platforms.add(box2!!);
+            Physics.boxes.add(box2!!);
+
         }
 
         override fun onFixedUpdate() {
