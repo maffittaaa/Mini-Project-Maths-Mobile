@@ -27,8 +27,6 @@ open class Rectangle(position: Vector?, var width: Float, var height: Float, col
         canvas!!.drawRect(left, top, right, bottom, paint)
     }
 
-
-
     override fun hitLeftWall(): Boolean {
         return (position.x - width / 2) <= gameSurface!!.width
     }

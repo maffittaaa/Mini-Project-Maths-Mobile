@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import com.innoveworkshop.gametest.MainActivity
 import com.innoveworkshop.gametest.engine.Physics
 import com.innoveworkshop.gametest.engine.Vector
 import com.innoveworkshop.gametest.assets.Box
@@ -30,6 +29,7 @@ open class Player(
     var inputForce: Float = 0f;
     var pushForce: Float = 3000f;
     var isJumping = false;
+    var isColliding = false;
 
 
     override fun onFixedUpdate() {
@@ -51,6 +51,8 @@ open class Player(
         isJumping = false;
 
         Physics.boxes.forEach { PushBoxes(it) };
+
+        Physics.doors.forEach { GoingToNextLevel(it) };
     }
 
     fun jump() {
@@ -64,6 +66,9 @@ open class Player(
 
     //get the closest point on a rectangle
     fun GetClosestPointOnRectangle(rectangle: Rectangle): Vector {
+        if (rectangle.isDestroyed)
+            return Vector(0f, 0f);
+
         var rectX = position.x.coerceIn(rectangle.position.x - rectangle.width / 2, rectangle.position.x + rectangle.width / 2); //on the x-component, in can be between the min and the max value
         var rectY = position.y.coerceIn(rectangle.position.y - rectangle.height / 2, rectangle.position.y + rectangle.height / 2); //on the y-component, in can be between the min and the max value
 
@@ -71,6 +76,9 @@ open class Player(
     }
 
     fun GetCollisionWithRectangle(rectangle: Rectangle): Boolean {
+        if (rectangle.isDestroyed)
+            return false;
+
         val closestPoint = GetClosestPointOnRectangle(rectangle);
         var distance = sqrt((position.x - closestPoint.x).pow(2) + (position.y - closestPoint.y).pow(2)); //distance between the position of the player and the closest point on the platforms
 
@@ -123,6 +131,20 @@ open class Player(
 
             position.x += velocity.x * Physics.deltaTime; //update position of player
             boxPosition.x += boxVelocity.x * Physics.deltaTime; //update position of box
+    }
+
+    fun GoingToNextLevel(door: Door): Boolean {
+        val closestPoint = GetClosestPointOnRectangle(door);
+        var distance = sqrt((position.x - closestPoint.x).pow(2) + (position.y - closestPoint.y).pow(2));
+
+        if (distance < width / 2) {
+            isColliding = true;
+            return true;
+        }
+        else {
+            isColliding = false;
+            return false;
+        }
     }
 
     @SuppressLint("DrawAllocation")
