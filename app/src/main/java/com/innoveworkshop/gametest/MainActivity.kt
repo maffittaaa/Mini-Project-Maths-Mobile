@@ -145,15 +145,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             player!!.onFixedUpdate()
-
-//            println("player " + player!!.position.y)
-//            println("platform " + platform2!!.position.y)
-//
-//            if ((player!!.position.y + 69.9729).toFloat() == platform2?.position?.y)
-//            {
-//                platform2!!.position = Vector((gameSurface?.width?.minus(1200)!!.toFloat()), (gameSurface?.height?.minus(755))!!.toFloat()) * Physics.deltaTime
-//                platform1!!.position = Vector((gameSurface?.width?.minus(200)!!.toFloat()), (gameSurface?.height?.minus(1550))!!.toFloat()) * Physics.deltaTime
-//            }
         }
     }
 }
