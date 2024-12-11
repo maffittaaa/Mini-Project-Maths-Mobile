@@ -6,13 +6,17 @@ import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.viewpager2.widget.ViewPager2.ScrollState
+import com.innoveworkshop.gametest.assets.Box
 import com.innoveworkshop.gametest.assets.Player
 import com.innoveworkshop.gametest.engine.GameObject
 import com.innoveworkshop.gametest.engine.GameSurface
 import com.innoveworkshop.gametest.engine.Physics
 import com.innoveworkshop.gametest.engine.Rectangle
 import com.innoveworkshop.gametest.engine.Vector
+import java.nio.file.WatchEvent.Modifier
 
 
 class MainActivity : AppCompatActivity() {
@@ -73,8 +77,8 @@ class MainActivity : AppCompatActivity() {
         var ground: Rectangle? = null
         var platform1: Rectangle? = null
         var platform2: Rectangle? = null
-        var box1: Rectangle? = null
-        var box2: Rectangle? = null
+        var box1: Box? = null
+        var box2: Box? = null
 
         override fun onStart(surface: GameSurface?) {
             super.onStart(surface)
@@ -110,8 +114,8 @@ class MainActivity : AppCompatActivity() {
             Physics.platforms.add(platform2!!);
 
             //creating 1st box
-            box1 = Rectangle(
-                position = Vector((surface.width / 2 + 100).toFloat(), (surface.height - 55).toFloat()),
+            box1 = Box(
+                position = Vector((surface.width / 2 - 200).toFloat(), (surface.height - 55).toFloat()),
                 120f,120f, Color.rgb(0, 128, 0)
             )
             surface.addGameObject(box1!!);
@@ -119,7 +123,7 @@ class MainActivity : AppCompatActivity() {
             Physics.boxes.add(box1!!);
 
             //creating 2nd box
-            box2 = Rectangle(
+            box2 = Box(
                 position = Vector((surface.width - 200).toFloat(), (surface.height - 840).toFloat()),
                 120f,120f, Color.rgb(0, 128, 0)
             )
@@ -141,6 +145,15 @@ class MainActivity : AppCompatActivity() {
             }
 
             player!!.onFixedUpdate()
+
+//            println("player " + player!!.position.y)
+//            println("platform " + platform2!!.position.y)
+//
+//            if ((player!!.position.y + 69.9729).toFloat() == platform2?.position?.y)
+//            {
+//                platform2!!.position = Vector((gameSurface?.width?.minus(1200)!!.toFloat()), (gameSurface?.height?.minus(755))!!.toFloat()) * Physics.deltaTime
+//                platform1!!.position = Vector((gameSurface?.width?.minus(200)!!.toFloat()), (gameSurface?.height?.minus(1550))!!.toFloat()) * Physics.deltaTime
+//            }
         }
     }
 }

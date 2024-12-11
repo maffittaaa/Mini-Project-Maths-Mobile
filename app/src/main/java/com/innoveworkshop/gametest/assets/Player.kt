@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import com.innoveworkshop.gametest.MainActivity
 import com.innoveworkshop.gametest.engine.Physics
 import com.innoveworkshop.gametest.engine.Vector
+import com.innoveworkshop.gametest.assets.Box
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -20,14 +22,15 @@ open class Player(
 ) : Rectangle(position, width, height, color) {
 
     var velocity: Vector = Vector(0f, 0f);
-    var mass: Float = 10f;
+    var mass: Float = 1f;
     var friction: Float = 0.7f;
     var speed = 150f;
     var acceleration: Float = 0f;
     var jumpForce: Float = 370f;
     var inputForce: Float = 0f;
-    var pushForce: Float = 40f;
+    var pushForce: Float = 3000f;
     var isJumping = false;
+
 
     override fun onFixedUpdate() {
         super.onFixedUpdate();
@@ -47,7 +50,7 @@ open class Player(
         position.y += velocity.y; //adding velocity to the player's position (y-directions)
         isJumping = false;
 
-        Physics.boxes.forEach { rectangle -> PushBoxes(rectangle) };
+        Physics.boxes.forEach { PushBoxes(it) };
     }
 
     fun jump() {
@@ -99,24 +102,27 @@ open class Player(
         return false; // if player is in the air
     }
 
-    fun PushBoxes(rectangle: Rectangle) {
-
-        val closestPoint = GetClosestPointOnRectangle(rectangle);
+    fun PushBoxes(box: Box) {
+        val closestPoint = GetClosestPointOnRectangle(box);
         var distance = sqrt((position.x - closestPoint.x).pow(2) + (position.y - closestPoint.y).pow(2))
 
-        if (distance < width / 2) {
-            println("hello");
-            pushForce = mass * velocity.x;
-            acceleration = pushForce / Box.mass;
+            var boxVelocity = box.velocity;
+            var boxMass = box.mass;
+            var boxPosition = box.position;
 
-            Box.velocity?.x = Box.velocity?.x?.plus(acceleration * Physics.deltaTime)!!;
-            println(Box.velocity?.x)
-        }
-        Box.velocity?.x = Box.velocity?.x?.times(friction)!!; //add friction to box
+            if (distance < width / 2) {
+                acceleration = pushForce / (boxMass / 2);
 
-        position.x += velocity.x * Physics.deltaTime; //update position of player
-        Box.position.x += Box.velocity!!.x * Physics.deltaTime; //update position of box
-        println(Box.position.x)
+                if (closestPoint.x < boxPosition.x) // closestPoint.x < boxPosition.x (he's left of the box)
+                    boxVelocity.x += acceleration * Physics.deltaTime;
+                else  // closestPoint.x > boxPosition.x (he's right of the box)
+                    boxVelocity.x -= acceleration * Physics.deltaTime;
+
+            }
+            boxVelocity.x = boxVelocity.x.times(friction); //add friction to box
+
+            position.x += velocity.x * Physics.deltaTime; //update position of player
+            boxPosition.x += boxVelocity.x * Physics.deltaTime; //update position of box
     }
 
     @SuppressLint("DrawAllocation")
