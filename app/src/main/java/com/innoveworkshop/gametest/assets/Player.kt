@@ -52,7 +52,7 @@ open class Player(
 
         Physics.boxes.forEach { PushBoxes(it) };
 
-        Physics.doors.forEach { GoingToNextLevel(it) };
+       // Physics.doors.forEach { GoingToNextLevel(it) };
     }
 
     fun jump() {
@@ -133,7 +133,10 @@ open class Player(
             boxPosition.x += boxVelocity.x * Physics.deltaTime; //update position of box
     }
 
-    fun GoingToNextLevel(door: Door): Boolean {
+    fun GoingToNextLevel(door: Door?): Boolean {
+        if (door == null)
+            return false;
+
         val closestPoint = GetClosestPointOnRectangle(door);
         var distance = sqrt((position.x - closestPoint.x).pow(2) + (position.y - closestPoint.y).pow(2));
 
