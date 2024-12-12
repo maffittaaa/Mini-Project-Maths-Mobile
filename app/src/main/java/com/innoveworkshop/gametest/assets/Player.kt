@@ -1,12 +1,7 @@
 package com.innoveworkshop.gametest.assets
 
-import android.annotation.SuppressLint
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
 import com.innoveworkshop.gametest.engine.Physics
 import com.innoveworkshop.gametest.engine.Vector
-import com.innoveworkshop.gametest.assets.Box
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -51,8 +46,6 @@ open class Player(
         isJumping = false;
 
         Physics.boxes.forEach { PushBoxes(it) };
-
-       // Physics.doors.forEach { GoingToNextLevel(it) };
     }
 
     fun jump() {
@@ -147,19 +140,6 @@ open class Player(
         else {
             isColliding = false;
             return false;
-        }
-    }
-
-    @SuppressLint("DrawAllocation")
-    override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas)
-        var painter = Paint(Paint.ANTI_ALIAS_FLAG)
-        painter.color = Color.rgb (255f, 0f, 0f);
-        painter.style = Paint.Style.FILL
-
-        Physics.platforms.forEach { rectangle -> //for each rectangle that is created
-            var closestPoint = GetClosestPointOnRectangle(rectangle);
-            canvas!!.drawRect(closestPoint.x - 10, closestPoint.y - 10, closestPoint.x + 10,closestPoint.y + 10, painter)
         }
     }
 }

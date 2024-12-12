@@ -7,8 +7,10 @@ import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.alpha
 import androidx.viewpager2.widget.ViewPager2.ScrollState
 import com.innoveworkshop.gametest.assets.Box
 import com.innoveworkshop.gametest.assets.Door
@@ -169,15 +171,12 @@ class MainActivity : AppCompatActivity() {
 
             player!!.onFixedUpdate()
 
-            println("Player: " + player!!.position.y)
-            println("Platform " + platform2!!.position.y)
-
             if (player!!.GoingToNextLevel(door1))
                 Level2();
-            else if (player!!.GoingToNextLevel(door2)) {
+            else if (player!!.GoingToNextLevel(door2))
                 Level3();
-            }
-
+            else if (player!!.GoingToNextLevel(door3))
+                findViewById<TextView>(R.id.textView).alpha = 1f;
         }
 
         fun Level2()
